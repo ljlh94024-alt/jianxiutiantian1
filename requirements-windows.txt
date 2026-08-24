@@ -1,0 +1,2 @@
+# Optional target-Agent dependency for Task009 Task Scheduler COM integration.
+pywin32>=306

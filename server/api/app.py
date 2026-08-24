@@ -79,6 +79,9 @@ class ApiApplication:
         if route == "/api/tasks" and method == "POST":
             validate_task_payload(body)
             return 201, self.store.create_task(body)
+        if route.startswith("/api/tasks/") and route.endswith("/rollback") and method == "POST":
+            task_id = route.split("/")[3]
+            return 201, self.store.create_rollback_task(task_id)
         if route == "/api/logs" and method == "GET":
             target_id = (query.get("target_id") or [None])[0]
             return 200, {"logs": self.store.list_logs(target_id)}

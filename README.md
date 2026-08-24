@@ -137,6 +137,10 @@ Task007 提供固定替代软件包目录 `packages/`（ImageGlass、7-Zip、VLC
 
 Task008 增加 `src/agent/component_cleaner/`：只读扫描服务、启动项、计划任务和后台进程，使用 `rules/component_behavior/` 中的 YAML 识别鲁大师、360/2345 推广组件以及壁纸/屏保/桌面助手。规划等级为 C0-C4，默认最高只到 C2；C3/C4 只生成网页待确认计划。Windows、Microsoft、WPS、Office、微信、QQ、浏览器、输入法主体和用户数据永久保护；未知组件只记录。服务器 SQLite 增加后台组件库存，设备详情页显示组件并可创建已授权任务。执行器默认 dry-run，真实后端必须由目标 Agent 显式注入，执行后写入 `component_clean.log` 并进行注入式验证。
 
+## Windows 真实执行后端与回滚（Task 009）
+
+Task009 增加 `src/agent/windows_backend/`。服务使用原生 Service Control Manager，启动项只处理精确 HKCU Run/Startup Folder，计划任务使用精确 Task Scheduler COM，文件组件必须位于显式 allowlist 目录。所有非 dry-run 操作先写入 `backup/<machine_id>/<timestamp>/snapshot.json`，再调用固定函数并验证；失败立即停止。网页任务历史显示快照并可创建需要再次授权的恢复任务。没有注入目标端管理器时仍只能 dry-run；不会调用 cmd、PowerShell、任意脚本、远程 Shell，也不会读取密码或连接未配置服务器。
+
 
 
 已支持 360、2345、腾讯、百度、搜狗和迅雷生态，以及 `security`、`browser`、`archive`、`image_viewer`、`driver_tool`、`downloader`、`input_method` 等分类。风险等级仅用于报告标记，不会触发任何操作。

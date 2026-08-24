@@ -13,6 +13,7 @@ from .installer import Installer, PackageCatalog
 from .safety import SafetyGate, SoftwareExecutionRequest
 from .uninstaller import Uninstaller
 from .verifier import VerificationResult, Verifier
+from src.agent.windows_backend import WindowsComponentTaskHandler, WindowsExecutionBackend, WindowsExecutionEngine
 
 TaskHandler = Callable[[TaskPackage], dict[str, Any]]
 
@@ -42,5 +43,5 @@ class WhitelistExecutor:
 __all__ = [
     "InputMethodCleaner", "Installer", "PackageCatalog", "SafeSoftwareExecutor", "SafeSoftwareTaskHandler", "SafetyGate",
     "SoftwareExecutionRequest", "Uninstaller", "VerificationResult", "Verifier",
-    "WhitelistExecutor",
+    "WhitelistExecutor", "WindowsComponentTaskHandler", "WindowsExecutionBackend", "WindowsExecutionEngine",
 ]

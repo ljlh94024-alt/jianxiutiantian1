@@ -305,6 +305,24 @@ class MaintenanceStore:
             )
         return self.get_task(task_id) or {}
 
+    def create_rollback_task(self, task_id: str) -> dict[str, Any]:
+        original = self.get_task(task_id)
+        if original is None:
+            raise KeyError(f"Unknown task: {task_id}")
+        result = original.get("result") or {}
+        snapshot_id = str(result.get("snapshot_id", "")).strip()
+        if original.get("status") != "success" or not snapshot_id:
+            raise ValueError("Only successful tasks with a snapshot can be rolled back")
+        return self.create_task(
+            {
+                "target_id": original["target_id"],
+                "action": "approved_action",
+                "risk": "L2",
+                "require_admin": True,
+                "parameters": {"operation": "rollback", "snapshot_id": snapshot_id},
+            }
+        )
+
     def list_logs(self, machine_id: str | None = None) -> list[dict[str, Any]]:
         with self._lock, self._connect() as db:
             if machine_id:

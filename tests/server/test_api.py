@@ -47,6 +47,20 @@ def test_upload_component_inventory_populates_background_components(tmp_path):
     assert device["components"][0]["name"] == "2345UpdateService"
 
 
+def test_successful_task_can_create_a_bound_rollback_task(tmp_path):
+    app = _app(tmp_path)
+    agent(app, "POST", "/api/agents/register", {"machine_id": MACHINE, "hostname": "PC", "os": "Windows11"})
+    status, task = console(app, "POST", "/api/tasks", {"target_id": MACHINE, "action": "approved_action", "risk": "L1", "require_admin": True, "parameters": {"operation": "disable_service"}})
+    assert status == 201
+    agent(app, "GET", f"/api/agents/{MACHINE}/tasks", {})
+    status, completed = agent(app, "POST", f"/api/agents/{MACHINE}/tasks/{task['task_id']}/result", {"status": "success", "snapshot_id": "PC001/20260101T000000000000Z"})
+    assert status == 200
+    status, rollback = console(app, "POST", f"/api/tasks/{task['task_id']}/rollback", {})
+    assert status == 201
+    assert rollback["parameters"]["operation"] == "rollback"
+    assert rollback["parameters"]["snapshot_id"].startswith("PC001/")
+
+
 def test_task_queue_claim_and_result(tmp_path):
     app = _app(tmp_path)
     agent(app, "POST", "/api/agents/register", {"machine_id": MACHINE, "hostname": "D", "os": "Windows11"})
