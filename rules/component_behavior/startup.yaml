@@ -1,0 +1,14 @@
+rules:
+  - name: desktop_decoration_startup
+    type: startup
+    match: ["Wallpaper", "Desktop", "ScreenSaver", "壁纸", "屏保", "桌面美化", "主题"]
+    action: disable_startup
+    risk: S2
+    level: C2
+  - name: promotion_assistant_startup
+    type: startup
+    match: ["LuDaShi", "鲁大师", "2345Update", "360News", "360Desktop", "推广助手", "推荐助手"]
+    action: disable_startup
+    risk: S2
+    level: C2
+

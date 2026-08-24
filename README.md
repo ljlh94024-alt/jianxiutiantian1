@@ -133,6 +133,10 @@ Task007 提供固定替代软件包目录 `packages/`（ImageGlass、7-Zip、VLC
 
 支持的执行操作仅有 `install_replacement`、`uninstall_component` 和 `optimize_input_method`。卸载使用精确白名单；WPS、Office、浏览器和输入法主体永远受保护。输入法只可整理推广启动项、推广服务、通知入口和推广缓存，不替换主体、不删除词库、不修改默认输入法。所有操作需要 Task005 用户授权和 Agent 权限，默认 dry-run，安装后必须经过注入式验证后端。
 
+## Windows 后台组件清理引擎（Task 008）
+
+Task008 增加 `src/agent/component_cleaner/`：只读扫描服务、启动项、计划任务和后台进程，使用 `rules/component_behavior/` 中的 YAML 识别鲁大师、360/2345 推广组件以及壁纸/屏保/桌面助手。规划等级为 C0-C4，默认最高只到 C2；C3/C4 只生成网页待确认计划。Windows、Microsoft、WPS、Office、微信、QQ、浏览器、输入法主体和用户数据永久保护；未知组件只记录。服务器 SQLite 增加后台组件库存，设备详情页显示组件并可创建已授权任务。执行器默认 dry-run，真实后端必须由目标 Agent 显式注入，执行后写入 `component_clean.log` 并进行注入式验证。
+
 
 
 已支持 360、2345、腾讯、百度、搜狗和迅雷生态，以及 `security`、`browser`、`archive`、`image_viewer`、`driver_tool`、`downloader`、`input_method` 等分类。风险等级仅用于报告标记，不会触发任何操作。

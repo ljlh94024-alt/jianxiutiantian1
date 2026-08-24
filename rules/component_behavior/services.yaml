@@ -1,0 +1,20 @@
+rules:
+  - name: ludashi_promotion_service
+    type: service
+    match: ["LuDaShi", "鲁大师", "LDSUpdate"]
+    action: disable_service
+    risk: S2
+    level: C2
+  - name: 2345_update_service
+    type: service
+    match: ["2345Update", "2345更新", "HaoZipUpdate"]
+    action: disable_service
+    risk: S2
+    level: C2
+  - name: 360_promotion_service
+    type: service
+    match: ["360Wallpaper", "360News", "360Desktop", "360资讯", "360壁纸"]
+    action: disable_service
+    risk: S2
+    level: C2
+

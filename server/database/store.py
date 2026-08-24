@@ -57,6 +57,23 @@ class MaintenanceStore:
                     UNIQUE(machine_id, name),
                     FOREIGN KEY(machine_id) REFERENCES devices(machine_id) ON DELETE CASCADE
                 );
+                CREATE TABLE IF NOT EXISTS components (
+                    id INTEGER PRIMARY KEY AUTOINCREMENT,
+                    machine_id TEXT NOT NULL,
+                    name TEXT NOT NULL,
+                    component_type TEXT NOT NULL,
+                    publisher TEXT NOT NULL DEFAULT '',
+                    path TEXT NOT NULL DEFAULT '',
+                    action TEXT NOT NULL DEFAULT 'record',
+                    level TEXT NOT NULL DEFAULT 'C0',
+                    risk TEXT NOT NULL DEFAULT 'unknown',
+                    protected INTEGER NOT NULL DEFAULT 0,
+                    matched_rule TEXT,
+                    component_json TEXT NOT NULL,
+                    updated_at TEXT NOT NULL,
+                    UNIQUE(machine_id, name, component_type),
+                    FOREIGN KEY(machine_id) REFERENCES devices(machine_id) ON DELETE CASCADE
+                );
                 CREATE TABLE IF NOT EXISTS tasks (
                     task_id TEXT PRIMARY KEY,
                     target_id TEXT NOT NULL,
@@ -148,10 +165,17 @@ class MaintenanceStore:
                         (machine_id,),
                     )
                 ]
+                device["components"] = [
+                    dict(item)
+                    for item in db.execute(
+                        "SELECT name, component_type, publisher, path, action, level, risk, protected, matched_rule, component_json, updated_at FROM components WHERE machine_id=? ORDER BY name",
+                        (machine_id,),
+                    )
+                ]
             return device
 
     def save_artifact(self, machine_id: str, kind: str, payload: Any) -> dict[str, Any]:
-        allowed = {"computer_profile", "software_inventory", "software_profile", "migration_plan"}
+        allowed = {"computer_profile", "software_inventory", "software_profile", "migration_plan", "component_inventory", "component_plan"}
         if kind not in allowed:
             raise ValueError(f"Unsupported artifact kind: {kind}")
         now = _now()
@@ -181,6 +205,23 @@ class MaintenanceStore:
                             profile.get("recommended_replacement"),
                             json.dumps(profile, ensure_ascii=False),
                             now,
+                        ),
+                    )
+            if kind == "component_inventory" and isinstance(payload, list):
+                for component in payload:
+                    if not isinstance(component, dict) or not component.get("name"):
+                        continue
+                    db.execute(
+                        """INSERT INTO components(machine_id, name, component_type, publisher, path, action, level, risk, protected, matched_rule, component_json, updated_at)
+                        VALUES(?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
+                        ON CONFLICT(machine_id, name, component_type) DO UPDATE SET publisher=excluded.publisher, path=excluded.path,
+                        action=excluded.action, level=excluded.level, risk=excluded.risk, protected=excluded.protected,
+                        matched_rule=excluded.matched_rule, component_json=excluded.component_json, updated_at=excluded.updated_at""",
+                        (
+                            machine_id, str(component["name"]), str(component.get("type", component.get("component_type", "unknown"))),
+                            str(component.get("publisher", "")), str(component.get("path", "")), str(component.get("action", "record")),
+                            str(component.get("level", "C0")), str(component.get("risk", "unknown")), int(bool(component.get("protected", False))),
+                            component.get("matched_rule"), json.dumps(component, ensure_ascii=False), now,
                         ),
                     )
         return {"machine_id": machine_id, "kind": kind, "stored_at": now}

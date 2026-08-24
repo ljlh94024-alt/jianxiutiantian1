@@ -38,6 +38,15 @@ def test_upload_scan_result_populates_software_page(tmp_path):
     assert device["software"][0]["protection"] == "P1"
 
 
+def test_upload_component_inventory_populates_background_components(tmp_path):
+    app = _app(tmp_path)
+    agent(app, "POST", "/api/agents/register", {"machine_id": MACHINE, "hostname": "D", "os": "Windows11"})
+    status, _ = agent(app, "POST", f"/api/agents/{MACHINE}/artifacts", {"kind": "component_inventory", "payload": [{"name": "2345UpdateService", "type": "service", "action": "disable_service", "level": "C2", "protected": False}]})
+    assert status == 201
+    _, device = console(app, "GET", f"/api/devices/{MACHINE}")
+    assert device["components"][0]["name"] == "2345UpdateService"
+
+
 def test_task_queue_claim_and_result(tmp_path):
     app = _app(tmp_path)
     agent(app, "POST", "/api/agents/register", {"machine_id": MACHINE, "hostname": "D", "os": "Windows11"})
@@ -72,4 +81,3 @@ def test_agent_token_is_separate_from_console_token(tmp_path):
     app = _app(tmp_path)
     status, _ = app.dispatch("POST", "/api/agents/register", {"machine_id": MACHINE, "hostname": "D", "os": "Windows"}, {"Authorization": "Bearer console"})
     assert status == 401
-

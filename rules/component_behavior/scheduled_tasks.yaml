@@ -1,0 +1,20 @@
+rules:
+  - name: ludashi_promotion_task
+    type: scheduled_task
+    match: ["LuDaShi", "鲁大师", "LDSUpdate"]
+    action: remove_task
+    risk: S2
+    level: C3
+  - name: 2345_promotion_task
+    type: scheduled_task
+    match: ["2345", "HaoZip", "好压", "推广"]
+    action: remove_task
+    risk: S2
+    level: C3
+  - name: desktop_decoration_task
+    type: scheduled_task
+    match: ["Wallpaper", "Desktop", "ScreenSaver", "壁纸", "屏保", "主题"]
+    action: remove_task
+    risk: S2
+    level: C3
+

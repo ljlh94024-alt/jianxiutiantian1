@@ -1,0 +1,20 @@
+rules:
+  - name: ludashi_wallpaper_component
+    type: desktop_app
+    match: ["LuDaShiWallpaper", "鲁大师壁纸", "LDSWallpaper"]
+    action: remove_component
+    risk: S2
+    level: C3
+  - name: 360_wallpaper_component
+    type: desktop_app
+    match: ["360Wallpaper", "360壁纸", "360Desktop", "360桌面助手"]
+    action: remove_component
+    risk: S2
+    level: C3
+  - name: desktop_decoration_component
+    type: desktop_app
+    match: ["Wallpaper", "ScreenSaver", "壁纸", "屏保", "桌面美化", "主题"]
+    action: remove_component
+    risk: S2
+    level: C3
+
