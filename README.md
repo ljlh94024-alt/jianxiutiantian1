@@ -115,6 +115,18 @@ python main.py create-task --target-id PC001 --task-id task_001 --action analyze
 
 当前版本支持离线任务包/结果包及客户端主动连接接口，但不提供网络监听、后台服务、自动启动、自动提权、密码保存或系统动作执行器。`approved_action` 的真实实现保留到 Task 007。
 
+## Web维护控制台（Task 006）
+
+启动本地控制台：
+
+```powershell
+python -m server.run
+```
+
+默认只绑定 `127.0.0.1:8765`，SQLite 文件为 `maintenance.db`。控制台包含客户电脑、软件明细、任务历史和 AI 备用配置页面；Agent 使用主动轮询接口登记、心跳、上传画像、拉取任务和回传结果。设置 `WCA_CONSOLE_TOKEN` 与 `WCA_AGENT_TOKEN` 可启用两套独立令牌。内置服务器拒绝非回环绑定，远程部署需由外部认证 TLS 反向代理承载。
+
+网页不会提供删除按钮或 Shell 输入框；保护软件只显示锁定，目标软件只能创建白名单任务，仍由 Task005 的目标 Agent 授权握手决定是否执行。
+
 
 
 已支持 360、2345、腾讯、百度、搜狗和迅雷生态，以及 `security`、`browser`、`archive`、`image_viewer`、`driver_tool`、`downloader`、`input_method` 等分类。风险等级仅用于报告标记，不会触发任何操作。

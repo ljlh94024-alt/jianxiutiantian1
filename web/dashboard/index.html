@@ -1,0 +1,54 @@
+<!doctype html>
+<html lang="zh-CN">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width,initial-scale=1">
+  <title>Windows Clean Agent · 维护控制台</title>
+  <style>
+    :root { color-scheme: light; font-family: system-ui, -apple-system, "Segoe UI", sans-serif; background:#f4f6f8; color:#17202a; }
+    body { margin:0; } header { background:#15283d; color:#fff; padding:18px 28px; display:flex; justify-content:space-between; align-items:center; }
+    main { max-width:1200px; margin:24px auto; padding:0 18px; } nav { display:flex; gap:8px; margin-bottom:18px; flex-wrap:wrap; }
+    button { border:0; border-radius:6px; padding:9px 14px; background:#1769aa; color:#fff; cursor:pointer; } button.secondary { background:#637282; } button.warn { background:#9a5b00; }
+    input, select { padding:9px; border:1px solid #bdc7d1; border-radius:5px; box-sizing:border-box; } label { display:block; margin:9px 0 4px; font-size:13px; color:#465361; }
+    .panel { background:#fff; border-radius:10px; padding:18px; margin-bottom:18px; box-shadow:0 2px 10px #15283d12; } .grid { display:grid; grid-template-columns:repeat(auto-fit,minmax(260px,1fr)); gap:14px; }
+    .device { border:1px solid #d8e0e7; border-radius:8px; padding:14px; cursor:pointer; } .online { color:#087f3e; } .offline { color:#7c2b2b; }
+    table { width:100%; border-collapse:collapse; } th, td { text-align:left; padding:10px 8px; border-bottom:1px solid #e5e9ed; vertical-align:top; } th { color:#465361; font-size:13px; }
+    .badge { display:inline-block; padding:3px 7px; border-radius:12px; background:#edf1f5; font-size:12px; } .protected { background:#e8f0f7; color:#26567a; } .target { background:#fff0d6; color:#804d00; }
+    #message { min-height:22px; color:#8b3e00; } .hidden { display:none; } .row { display:flex; gap:8px; align-items:center; flex-wrap:wrap; }
+  </style>
+</head>
+<body>
+<header><div><strong>Windows Clean Agent</strong><span style="opacity:.72;margin-left:10px">维护控制台 · 人工确认模式</span></div><button class="secondary" onclick="logout()">退出</button></header>
+<main>
+  <section id="login" class="panel">
+    <h2>登录维护控制台</h2><p>控制台令牌只保存在当前浏览器会话，不写入任务或日志。</p>
+    <div class="row"><input id="token" type="password" placeholder="WCA_CONSOLE_TOKEN（未配置可留空）" style="min-width:300px"><button onclick="login()">进入</button></div>
+  </section>
+  <section id="app" class="hidden">
+    <nav><button onclick="show('devices')">客户电脑</button><button onclick="show('tasks')">任务历史</button><button onclick="show('ai')">AI配置</button></nav>
+    <div id="message"></div>
+    <section id="devices" class="panel"><div class="row"><h2 style="flex:1">客户电脑</h2><button class="secondary" onclick="loadDevices()">刷新</button></div><div id="device-list" class="grid"></div></section>
+    <section id="detail" class="panel hidden"><div class="row"><h2 id="detail-title" style="flex:1">电脑详情</h2><button class="secondary" onclick="show('devices')">返回</button></div><div id="device-info"></div><h3>软件列表</h3><div id="software-list"></div></section>
+    <section id="tasks" class="panel hidden"><h2>任务历史</h2><div id="task-list"></div></section>
+    <section id="ai" class="panel hidden"><h2>AI备用配置</h2><p>AI仅用于分析、建议和日志总结，不具备执行权限。API Key 只回显脱敏状态。</p><form onsubmit="saveAI(event)" class="grid"><div><label>名称</label><input id="ai-name" required><label>API地址</label><input id="ai-endpoint" type="url" required></div><div><label>Key</label><input id="ai-key" type="password" autocomplete="new-password"><label>模型</label><input id="ai-model" required></div><div><label>优先级</label><input id="ai-priority" type="number" value="100"><label><input id="ai-enabled" type="checkbox"> 启用</label><button>保存配置</button></div></form><div id="ai-list"></div></section>
+  </section>
+</main>
+<script>
+  const state = {token: sessionStorage.getItem('wca_token') || '', device: null};
+  const $ = id => document.getElementById(id);
+  function login(){ state.token=$('token').value; sessionStorage.setItem('wca_token',state.token); $('login').classList.add('hidden'); $('app').classList.remove('hidden'); loadDevices(); }
+  function logout(){ sessionStorage.removeItem('wca_token'); location.reload(); }
+  function show(name){ ['devices','detail','tasks','ai'].forEach(id=>$(id).classList.toggle('hidden',id!==name)); if(name==='tasks') loadTasks(); if(name==='ai') loadAI(); }
+  async function api(path, options={}) { options.headers=Object.assign({'Content-Type':'application/json','Authorization':'Bearer '+state.token},options.headers||{}); const res=await fetch(path,options); const data=await res.json(); if(!res.ok) throw new Error(data.error||res.statusText); return data; }
+  function fail(err){ $('message').textContent=err.message; }
+  async function loadDevices(){ try { const data=await api('/api/devices'); $('device-list').innerHTML=data.devices.map(d=>`<div class="device" data-id="${esc(d.machine_id)}" onclick="openDevice(this.dataset.id)"><h3>${esc(d.hostname)}</h3><div>${esc(d.machine_id)} · ${esc(d.os)}</div><strong class="${d.status==='online'?'online':'offline'}">${d.status==='online'?'在线':'离线'}</strong><div>最后心跳：${esc(d.last_seen||'—')}</div></div>`).join('')||'<p>尚无目标电脑登记。</p>'; } catch(e){fail(e)} }
+  async function openDevice(id){ try { const d=await api('/api/devices/'+encodeURIComponent(id)); state.device=d; $('detail-title').textContent=d.hostname+' · '+d.machine_id; $('device-info').innerHTML=`<p>系统：${esc(d.os)}　状态：${esc(d.status)}　最后心跳：${esc(d.last_seen||'—')}</p>`; $('software-list').innerHTML='<table><thead><tr><th>软件</th><th>分类</th><th>风险</th><th>保护</th><th>处置</th></tr></thead><tbody>'+d.software.map(s=>`<tr><td>${esc(s.name)}</td><td>${esc(s.category)}</td><td>${esc(s.risk)}</td><td><span class="badge ${s.protection==='P1'?'protected':'target'}">${esc(s.protection)}</span></td><td>${s.protection==='P1'?'<span class="badge protected">已锁定</span>':s.protection==='P4'?`<button class="warn" data-name="${esc(s.name)}" onclick="createTask(event,this.dataset.name)">生成任务</button>`:'仅报告'}</td></tr>`).join('')+'</tbody></table>'; show('detail'); } catch(e){fail(e)} }
+  async function createTask(event, software){ event.stopPropagation(); if(!state.device) return; if(!confirm('仅创建人工确认任务，不会直接执行：'+software)) return; try { await api('/api/tasks',{method:'POST',body:JSON.stringify({target_id:state.device.machine_id,action:'approved_action',risk:'L1',require_admin:true,parameters:{software}})}); $('message').textContent='任务已进入队列，等待目标 Agent 和用户授权。'; loadTasks(); }catch(e){fail(e)} }
+  async function loadTasks(){ try { const d=await api('/api/tasks'); $('task-list').innerHTML='<table><thead><tr><th>任务</th><th>目标</th><th>操作</th><th>时间</th><th>结果</th></tr></thead><tbody>'+d.tasks.map(t=>`<tr><td>${esc(t.task_id)}</td><td>${esc(t.target_id)}</td><td>${esc(t.action)}</td><td>${esc(t.created_at)}</td><td>${esc(t.status)}</td></tr>`).join('')+'</tbody></table>'; show('tasks'); }catch(e){fail(e)} }
+  async function loadAI(){ try { const d=await api('/api/ai-configs'); $('ai-list').innerHTML='<h3>已配置</h3><table><thead><tr><th>名称</th><th>地址</th><th>模型</th><th>优先级</th><th>Key</th></tr></thead><tbody>'+d.configs.map(c=>`<tr><td>${esc(c.name)}</td><td>${esc(c.endpoint)}</td><td>${esc(c.model)}</td><td>${c.priority}</td><td>${esc(c.api_key)}</td></tr>`).join('')+'</tbody></table>'; show('ai'); }catch(e){fail(e)} }
+  async function saveAI(event){ event.preventDefault(); try { await api('/api/ai-configs',{method:'POST',body:JSON.stringify({name:$('ai-name').value,endpoint:$('ai-endpoint').value,api_key:$('ai-key').value,model:$('ai-model').value,priority:Number($('ai-priority').value),enabled:$('ai-enabled').checked})}); event.target.reset(); $('message').textContent='AI配置已保存（Key 仅显示脱敏状态）。'; loadAI(); }catch(e){fail(e)} }
+  function esc(v){ return String(v??'').replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c])); }
+  if(state.token){ $('login').classList.add('hidden'); $('app').classList.remove('hidden'); loadDevices(); }
+</script>
+</body>
+</html>
