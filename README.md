@@ -1,33 +1,83 @@
-# Windows Clean Agent
+# Windows Clean Agent V3.0
 
-基于 Kilo Code + MCP 的一次性 Windows 家庭电脑分析与整理 Agent。
+基于 Kilo Code + MCP 的一次性 Windows 家庭电脑软件生态整理 Agent。
 
 ## 项目目标
 
+不是简单删除垃圾，而是：
+
 - 扫描 Windows 家庭电脑
-- 建立电脑画像
-- 分析磁盘、软件、启动项
-- 安全整理垃圾和旧安装包
-- 输出中文报告
+- 建立软件画像
+- 分析软件真实用途
+- 拆解流氓软件生态
+- 寻找安全替代方案
+- 完成功能迁移
+- 最后清理临时工具
 
-## 核心原则
+## 核心架构
 
-- AI 负责规划
-- MCP 提供操作能力
-- 规则引擎控制风险
-- 成熟工具负责执行
+```
+Scanner
+ ↓
+Software Inventory
+ ↓
+Software Fingerprint
+ ↓
+Function Analyzer
+ ↓
+Software Migration Engine
+ ↓
+Replacement Database
+ ↓
+Safety Gate
+ ↓
+Executor
+ ↓
+Verification
+```
 
-## 开发路线
+## 重点处理
 
-1. 基础框架
-2. MCP 接入
-3. Inventory 扫描
-4. Computer Profile
-5. Rule Engine
-6. Planner
-7. Safety Gate
-8. Dry Run
-9. Executor
-10. 工具适配
-11. 报告系统
-12. 测试
+### 360生态
+
+包括：
+
+- 360安全卫士
+- 360杀毒
+- 360浏览器
+- 360压缩
+- 360看图
+- 360相关组件
+
+原则：先保证功能，再删除。
+
+### 2345生态
+
+包括：
+
+- 2345浏览器
+- 2345好压
+- 2345看图王
+- 推广组件
+
+## MCP能力
+
+提供：
+
+- 软件扫描
+- 文件操作
+- 系统信息读取
+- 注册表分析
+- 执行操作
+- 报告生成
+
+## 文档
+
+- `docs/V3.0软件生态整理重构任务包.md`
+
+## 安全原则
+
+- 默认分析优先
+- 删除需要验证
+- 用户文件保护
+- 操作可追踪
