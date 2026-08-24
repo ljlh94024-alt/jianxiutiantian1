@@ -1,0 +1,16 @@
+family: sogou
+risk_level: S1
+keywords:
+  names: ["搜狗", "Sogou"]
+  publishers: ["Sogou", "搜狗"]
+  paths: ["Sogou"]
+  files: ["Sogou*.exe"]
+products:
+  - category: input_method
+    keywords:
+      names: ["搜狗输入法", "Sogou Input"]
+      files: ["SogouPY.ime", "SogouCloud.exe"]
+  - category: browser
+    keywords:
+      names: ["搜狗浏览器", "Sogou Explorer"]
+

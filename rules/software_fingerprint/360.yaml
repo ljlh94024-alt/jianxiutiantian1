@@ -1,0 +1,27 @@
+family: "360"
+risk_level: S2
+keywords:
+  names: ["360"]
+  publishers: ["360", "Qihoo", "QH"]
+  paths: ["360", "Qihoo", "360safe"]
+  files: ["360tray.exe", "360safe.exe"]
+products:
+  - category: security
+    risk_level: S3
+    keywords:
+      names: ["360安全卫士", "360杀毒", "360 Total Security"]
+      files: ["360tray.exe", "360safe.exe"]
+  - category: browser
+    keywords:
+      names: ["360浏览器", "360安全浏览器", "360极速浏览器"]
+      files: ["360se.exe", "360chrome.exe"]
+  - category: archive
+    keywords:
+      names: ["360压缩"]
+      files: ["360zip.exe"]
+  - category: driver_tool
+    risk_level: S3
+    keywords:
+      names: ["360驱动大师"]
+      files: ["360DrvMgr.exe"]
+

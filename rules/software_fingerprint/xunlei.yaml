@@ -1,0 +1,13 @@
+family: xunlei
+risk_level: S1
+keywords:
+  names: ["迅雷", "Xunlei", "Thunder"]
+  publishers: ["Xunlei", "迅雷"]
+  paths: ["Xunlei", "Thunder Network"]
+  files: ["Thunder.exe", "ThunderStart.exe"]
+products:
+  - category: downloader
+    keywords:
+      names: ["迅雷", "Xunlei", "Thunder"]
+      files: ["Thunder.exe", "ThunderStart.exe"]
+

@@ -77,6 +77,26 @@ Verification
 - `docs/ARCHITECTURE.md`
 - `docs/SOFTWARE_MIGRATION.md`
 - `docs/REPLACEMENT_DATABASE.md`
+- `任务包_002_软件指纹库与软件生态识别框架.md`
+
+## 软件指纹识别（Task 002）
+
+当前版本提供只读的软件资产采集与数据驱动指纹识别：
+
+```powershell
+python -m pip install -r requirements.txt
+python main.py scan
+```
+
+命令生成 `software_inventory.json` 和 `software_profile.json`。首次运行读取 Windows 标准卸载注册表；已有 inventory 文件默认复用，可用 `--refresh-inventory` 重新采集。指纹规则位于 `rules/software_fingerprint/`，增加生态或产品时只需添加/修改 YAML，无需改分类器核心代码。
+
+已支持 360、2345、腾讯、百度、搜狗和迅雷生态，以及 `security`、`browser`、`archive`、`image_viewer`、`driver_tool`、`downloader`、`input_method` 等分类。风险等级仅用于报告标记，不会触发任何操作。
+
+运行测试：
+
+```powershell
+python -m pytest
+```
 
 ## 安全原则
 

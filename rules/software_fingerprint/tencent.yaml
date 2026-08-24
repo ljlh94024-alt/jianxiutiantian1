@@ -1,0 +1,21 @@
+family: tencent
+risk_level: S1
+keywords:
+  names: ["腾讯", "QQ"]
+  publishers: ["Tencent", "腾讯"]
+  paths: ["Tencent", "QQ"]
+  files: ["QQBrowser.exe", "QQPCTray.exe"]
+products:
+  - category: security
+    risk_level: S3
+    keywords:
+      names: ["腾讯电脑管家"]
+      files: ["QQPCTray.exe", "QQPCRTP.exe"]
+  - category: browser
+    keywords:
+      names: ["QQ浏览器", "QQ Browser"]
+      files: ["QQBrowser.exe"]
+  - category: software_manager
+    keywords:
+      names: ["腾讯软件中心", "腾讯软件管理"]
+

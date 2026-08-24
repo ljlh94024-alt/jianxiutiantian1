@@ -1,0 +1,15 @@
+family: baidu
+risk_level: S1
+keywords:
+  names: ["百度", "Baidu"]
+  publishers: ["Baidu", "百度"]
+  paths: ["Baidu"]
+  files: ["Baidu*.exe"]
+products:
+  - category: browser
+    keywords:
+      names: ["百度浏览器", "Baidu Browser"]
+  - category: input_method
+    keywords:
+      names: ["百度输入法"]
+

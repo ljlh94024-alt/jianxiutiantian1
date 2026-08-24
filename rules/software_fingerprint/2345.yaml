@@ -1,0 +1,19 @@
+family: "2345"
+risk_level: S2
+keywords:
+  names: ["2345"]
+  publishers: ["2345"]
+  paths: ["2345", "Haozip", "Kuaizip"]
+  files: ["2345*.exe", "Haozip.exe"]
+products:
+  - category: browser
+    keywords:
+      names: ["2345浏览器", "2345加速浏览器"]
+  - category: archive
+    keywords:
+      names: ["2345好压", "好压", "Haozip", "Kuaizip"]
+      files: ["Haozip.exe", "Kuaizip.exe"]
+  - category: image_viewer
+    keywords:
+      names: ["2345看图王"]
+
