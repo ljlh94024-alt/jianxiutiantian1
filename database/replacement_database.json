@@ -1,0 +1,59 @@
+{
+  "2345看图王": {
+    "name": "2345看图王",
+    "category": "image_viewer",
+    "function": ["jpg_view", "png_view", "bmp_view", "gif_view", "webp_view"],
+    "replacement": [
+      {"name": "ImageGlass", "type": "open_source", "official_website": "https://imageglass.org/", "verification": ["open_jpg", "open_png", "open_webp"], "confidence": "high"},
+      {"name": "IrfanView", "type": "freeware", "official_website": "https://www.irfanview.com/", "verification": ["open_jpg", "open_png"], "confidence": "medium"}
+    ]
+  },
+  "360压缩": {
+    "name": "360压缩", "category": "archive", "function": ["zip_extract", "rar_extract", "7z_extract"],
+    "replacement": [{"name": "7-Zip", "type": "open_source", "official_website": "https://www.7-zip.org/", "verification": ["extract_zip", "extract_7z"], "confidence": "high"}]
+  },
+  "2345好压": {
+    "name": "2345好压", "category": "archive", "function": ["zip_extract", "rar_extract", "7z_extract"],
+    "replacement": [
+      {"name": "7-Zip", "type": "open_source", "official_website": "https://www.7-zip.org/", "verification": ["extract_zip", "extract_7z"], "confidence": "high"},
+      {"name": "Bandizip", "type": "freemium", "official_website": "https://www.bandisoft.com/bandizip/", "verification": ["extract_zip", "extract_7z", "inspect_rar"], "confidence": "medium"}
+    ]
+  },
+  "360安全卫士": {
+    "name": "360安全卫士", "category": "security", "function": ["real_time_protection", "virus_scan"],
+    "replacement": [{"name": "Windows Defender", "type": "system_component", "official_website": "https://support.microsoft.com/windows/stay-protected-with-windows-security", "verification": ["defender_status_healthy", "real_time_protection_enabled"], "confidence": "high"}]
+  },
+  "360杀毒": {
+    "name": "360杀毒", "category": "security", "function": ["real_time_protection", "virus_scan"],
+    "replacement": [{"name": "Windows Defender", "type": "system_component", "official_website": "https://support.microsoft.com/windows/stay-protected-with-windows-security", "verification": ["defender_status_healthy", "real_time_protection_enabled"], "confidence": "high"}]
+  },
+  "360驱动大师": {
+    "name": "360驱动大师", "category": "driver_tool", "function": ["driver_detection"],
+    "replacement": [
+      {"name": "Windows Update", "type": "system_component", "official_website": "https://support.microsoft.com/windows/update-windows", "verification": ["device_manager_has_no_errors"], "confidence": "high"},
+      {"name": "设备厂商官方驱动工具", "type": "vendor_tool", "official_website": "https://support.microsoft.com/windows/update-drivers-through-device-manager", "verification": ["device_manager_has_no_errors"], "confidence": "medium"}
+    ]
+  },
+  "驱动人生": {
+    "name": "驱动人生", "category": "driver_tool", "function": ["driver_detection"],
+    "replacement": [
+      {"name": "Windows Update", "type": "system_component", "official_website": "https://support.microsoft.com/windows/update-windows", "verification": ["device_manager_has_no_errors"], "confidence": "high"},
+      {"name": "设备厂商官方驱动工具", "type": "vendor_tool", "official_website": "https://support.microsoft.com/windows/update-drivers-through-device-manager", "verification": ["device_manager_has_no_errors"], "confidence": "medium"}
+    ]
+  },
+  "驱动精灵": {
+    "name": "驱动精灵", "category": "driver_tool", "function": ["driver_detection"],
+    "replacement": [
+      {"name": "Windows Update", "type": "system_component", "official_website": "https://support.microsoft.com/windows/update-windows", "verification": ["device_manager_has_no_errors"], "confidence": "high"},
+      {"name": "设备厂商官方驱动工具", "type": "vendor_tool", "official_website": "https://support.microsoft.com/windows/update-drivers-through-device-manager", "verification": ["device_manager_has_no_errors"], "confidence": "medium"}
+    ]
+  },
+  "迅雷": {
+    "name": "迅雷", "aliases": ["Xunlei", "Thunder"], "category": "downloader", "function": ["download_management"],
+    "replacement": [
+      {"name": "浏览器下载", "type": "built_in", "official_website": "https://support.microsoft.com/microsoft-edge/downloads", "verification": ["download_test_file"], "confidence": "high"},
+      {"name": "Motrix", "type": "open_source", "official_website": "https://motrix.app/", "verification": ["download_test_file"], "confidence": "medium"},
+      {"name": "aria2", "type": "open_source", "official_website": "https://aria2.github.io/", "verification": ["download_test_file"], "confidence": "medium"}
+    ]
+  }
+}

@@ -86,9 +86,12 @@ Verification
 ```powershell
 python -m pip install -r requirements.txt
 python main.py scan
+python main.py analyze
 ```
 
 命令生成 `software_inventory.json` 和 `software_profile.json`。首次运行读取 Windows 标准卸载注册表；已有 inventory 文件默认复用，可用 `--refresh-inventory` 重新采集。指纹规则位于 `rules/software_fingerprint/`，增加生态或产品时只需添加/修改 YAML，无需改分类器核心代码。
+
+`analyze` 读取 `software_profile.json`，按 `database/` 中的替代数据库生成 `replacement_suggestion.json`。它只生成建议，不安装、卸载、删除或修改系统设置。浏览器是用户明确保护的类别，不生成迁移建议。
 
 已支持 360、2345、腾讯、百度、搜狗和迅雷生态，以及 `security`、`browser`、`archive`、`image_viewer`、`driver_tool`、`downloader`、`input_method` 等分类。风险等级仅用于报告标记，不会触发任何操作。
 

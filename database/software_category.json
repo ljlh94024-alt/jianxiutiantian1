@@ -1,0 +1,10 @@
+{
+  "image_viewer": {"description": "图片查看", "examples": ["2345看图王", "360看图"]},
+  "archive": {"description": "压缩与解压", "examples": ["360压缩", "2345好压"]},
+  "browser": {"description": "网页浏览与收藏夹管理", "examples": ["360浏览器", "2345浏览器"]},
+  "security": {"description": "实时防护与病毒扫描", "examples": ["360安全卫士", "360杀毒"]},
+  "driver_tool": {"description": "硬件驱动检测与维护", "examples": ["360驱动大师", "驱动人生", "驱动精灵"]},
+  "downloader": {"description": "文件下载管理", "examples": ["迅雷"]},
+  "input_method": {"description": "文字输入", "examples": ["搜狗输入法"]}
+}
+

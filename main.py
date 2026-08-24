@@ -6,6 +6,8 @@ import argparse
 import json
 from pathlib import Path
 
+from src.replacement.loader import load_replacement_data
+from src.replacement.matcher import ReplacementMatcher
 from src.software.classifier import SoftwareClassifier
 from src.software.fingerprint import FingerprintDatabase
 from src.software.inventory import collect_windows_inventory
@@ -37,6 +39,16 @@ def scan(inventory_path: Path, profile_path: Path, rules_path: Path, refresh: bo
     return 0
 
 
+def analyze(profile_path: Path, output_path: Path, database_path: Path) -> int:
+    profiles = _read_json_list(profile_path)
+    matcher = ReplacementMatcher(load_replacement_data(database_path))
+    suggestions = matcher.match_all(profiles)
+    _write_json(output_path, suggestions)
+    print(f"Profile:     {profile_path} ({len(profiles)} records)")
+    print(f"Suggestions: {output_path} ({len(suggestions)} records)")
+    return 0
+
+
 def build_parser() -> argparse.ArgumentParser:
     parser = argparse.ArgumentParser(description="Windows Clean Agent (analysis only)")
     subparsers = parser.add_subparsers(dest="command", required=True)
@@ -45,6 +57,10 @@ def build_parser() -> argparse.ArgumentParser:
     scan_parser.add_argument("--output", type=Path, default=PROJECT_ROOT / "software_profile.json")
     scan_parser.add_argument("--rules", type=Path, default=PROJECT_ROOT / "rules" / "software_fingerprint")
     scan_parser.add_argument("--refresh-inventory", action="store_true", help="re-read the read-only Windows inventory")
+    analyze_parser = subparsers.add_parser("analyze", help="generate replacement suggestions without executing changes")
+    analyze_parser.add_argument("--profile", type=Path, default=PROJECT_ROOT / "software_profile.json")
+    analyze_parser.add_argument("--output", type=Path, default=PROJECT_ROOT / "replacement_suggestion.json")
+    analyze_parser.add_argument("--database", type=Path, default=PROJECT_ROOT / "database")
     return parser
 
 
@@ -52,9 +68,10 @@ def main() -> int:
     args = build_parser().parse_args()
     if args.command == "scan":
         return scan(args.inventory, args.output, args.rules, args.refresh_inventory)
+    if args.command == "analyze":
+        return analyze(args.profile, args.output, args.database)
     return 2
 
 
 if __name__ == "__main__":
     raise SystemExit(main())
-

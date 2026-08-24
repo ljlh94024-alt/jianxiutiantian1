@@ -1,0 +1,10 @@
+{
+  "image_viewer": {"tests": ["open_jpg", "open_png", "open_bmp", "open_gif", "open_webp"]},
+  "archive": {"tests": ["extract_zip", "extract_7z", "inspect_rar"]},
+  "browser": {"tests": ["open_webpage", "import_bookmarks"]},
+  "security": {"tests": ["defender_status_healthy", "real_time_protection_enabled"]},
+  "driver_tool": {"tests": ["device_manager_has_no_errors"]},
+  "downloader": {"tests": ["download_test_file"]},
+  "input_method": {"tests": ["type_chinese_text"]}
+}
+
