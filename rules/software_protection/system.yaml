@@ -1,0 +1,10 @@
+rules:
+  - protection: P0
+    action: ignore
+    reason: System components are protected and outside the cleanup scope.
+    categories: [system, system_component, driver]
+    names:
+      - Microsoft Visual C++
+      - Windows Desktop Runtime
+      - Microsoft .NET
+

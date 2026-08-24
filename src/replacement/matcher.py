@@ -41,13 +41,16 @@ class ReplacementMatcher:
         if not candidates:
             return None
         entry = max(candidates, key=lambda candidate: candidate[0])[1]
-        return {
+        result = {
             "software": software_name,
             "function": entry["category"],
             "category": entry["category"],
             "capabilities": list(entry["function"]),
             "suggestions": [dict(suggestion) for suggestion in entry["replacement"]],
         }
+        if profile.get("target_id"):
+            result["target_id"] = str(profile["target_id"])
+        return result
 
     def match_all(self, profiles: Iterable[dict]) -> list[dict]:
         return [suggestion for profile in profiles if (suggestion := self.match(profile)) is not None]

@@ -1,0 +1,17 @@
+rules:
+  - protection: P1
+    action: ignore
+    reason: Communication and collaboration software is protected unless the user explicitly changes scope.
+    categories: [communication]
+    names:
+      - 微信
+      - WeChat
+      - QQ
+      - TIM
+      - 企业微信
+      - WeCom
+      - 钉钉
+      - DingTalk
+      - 飞书
+      - Lark
+

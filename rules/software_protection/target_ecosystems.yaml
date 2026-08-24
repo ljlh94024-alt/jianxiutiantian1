@@ -1,0 +1,32 @@
+rules:
+  - protection: P4
+    action: analyze
+    reason: Explicitly scoped high-promotion 360 ecosystem component.
+    names:
+      - 360安全卫士
+      - 360杀毒
+      - 360压缩
+      - 360壁纸
+      - 360桌面助手
+      - 360驱动大师
+      - 360浏览器
+      - 360安全浏览器
+      - 360极速浏览器
+  - protection: P4
+    action: analyze
+    reason: Explicitly scoped high-promotion 2345 ecosystem component.
+    names:
+      - 2345浏览器
+      - 2345加速浏览器
+      - 2345好压
+      - 2345看图王
+      - 2345安全
+  - protection: P3
+    action: review
+    reason: Promotion-associated utility requires explicit human review.
+    names:
+      - 驱动人生
+      - 驱动精灵
+      - 鲁大师
+      - 快压
+

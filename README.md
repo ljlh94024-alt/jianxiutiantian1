@@ -93,6 +93,17 @@ python main.py analyze
 
 `analyze` 读取 `software_profile.json`，按 `database/` 中的替代数据库生成 `replacement_suggestion.json`。它只生成建议，不安装、卸载、删除或修改系统设置。浏览器是用户明确保护的类别，不生成迁移建议。
 
+## 目标电脑指定软件生态整理规划（Task 004）
+
+```powershell
+python main.py scan --target-profile examples/target_profile.json --refresh-inventory
+python main.py analyze
+python main.py plan --target-profile examples/target_profile.json
+```
+
+输出位于 `reports/migration_plan.json` 和 `reports/migration_report.json`。开发电脑和目标电脑均不执行修改。P0/P1 软件直接保护，P2 普通软件仅报告，P3 等待人工审查，仅 P4 指定的高推广生态进入替代分析；规则位于 `rules/software_protection/`。
+
+
 已支持 360、2345、腾讯、百度、搜狗和迅雷生态，以及 `security`、`browser`、`archive`、`image_viewer`、`driver_tool`、`downloader`、`input_method` 等分类。风险等级仅用于报告标记，不会触发任何操作。
 
 运行测试：

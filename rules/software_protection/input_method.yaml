@@ -1,0 +1,10 @@
+rules:
+  - protection: P1
+    action: ignore
+    reason: Input methods are protected and analysis-only.
+    categories: [input_method]
+    names:
+      - 搜狗输入法
+      - 百度输入法
+      - 微软拼音
+

@@ -4,3 +4,5 @@ __pycache__/
 software_inventory.json
 software_profile.json
 replacement_suggestion.json
+reports/migration_plan.json
+reports/migration_report.json

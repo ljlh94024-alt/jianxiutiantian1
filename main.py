@@ -6,6 +6,10 @@ import argparse
 import json
 from pathlib import Path
 
+from src.migration.generator import generate_migration_artifacts
+from src.migration.models import TargetProfile
+from src.migration.planner import MigrationPlanner
+from src.migration.protection import ProtectionPolicy
 from src.replacement.loader import load_replacement_data
 from src.replacement.matcher import ReplacementMatcher
 from src.software.classifier import SoftwareClassifier
@@ -23,16 +27,33 @@ def _read_json_list(path: Path) -> list[dict]:
     return data
 
 
+def _read_json_object(path: Path) -> dict:
+    data = json.loads(path.read_text(encoding="utf-8-sig"))
+    if not isinstance(data, dict):
+        raise ValueError(f"{path} must contain a JSON object")
+    return data
+
+
 def _write_json(path: Path, data: list[dict]) -> None:
     path.write_text(json.dumps(data, ensure_ascii=False, indent=2) + "\n", encoding="utf-8")
 
 
-def scan(inventory_path: Path, profile_path: Path, rules_path: Path, refresh: bool = False) -> int:
+def scan(
+    inventory_path: Path,
+    profile_path: Path,
+    rules_path: Path,
+    refresh: bool = False,
+    target_profile_path: Path | None = None,
+) -> int:
     if refresh or not inventory_path.exists():
         _write_json(inventory_path, collect_windows_inventory())
     inventory = _read_json_list(inventory_path)
     classifier = SoftwareClassifier(FingerprintDatabase.load(rules_path))
     profiles = classifier.classify_all(inventory, include_unmatched=True)
+    if target_profile_path:
+        target = TargetProfile.from_dict(_read_json_object(target_profile_path))
+        for profile in profiles:
+            profile["target_id"] = target.target_id
     _write_json(profile_path, profiles)
     print(f"Inventory: {inventory_path} ({len(inventory)} records)")
     print(f"Profile:   {profile_path} ({len(profiles)} records)")
@@ -49,6 +70,26 @@ def analyze(profile_path: Path, output_path: Path, database_path: Path) -> int:
     return 0
 
 
+def plan_migration(
+    target_profile_path: Path,
+    profile_path: Path,
+    suggestion_path: Path,
+    plan_path: Path,
+    report_path: Path,
+    protection_rules_path: Path,
+) -> int:
+    target = TargetProfile.from_dict(_read_json_object(target_profile_path))
+    profiles = _read_json_list(profile_path)
+    suggestions = _read_json_list(suggestion_path)
+    policy = ProtectionPolicy.load(protection_rules_path)
+    plans = MigrationPlanner(target, policy).create_plan(profiles, suggestions)
+    plan_document, _ = generate_migration_artifacts(target, plans, plan_path, report_path)
+    print(f"Target: {target.target_id}")
+    print(f"Plan:   {plan_path} ({len(plan_document['plans'])} scoped records)")
+    print(f"Report: {report_path}")
+    return 0
+
+
 def build_parser() -> argparse.ArgumentParser:
     parser = argparse.ArgumentParser(description="Windows Clean Agent (analysis only)")
     subparsers = parser.add_subparsers(dest="command", required=True)
@@ -57,19 +98,40 @@ def build_parser() -> argparse.ArgumentParser:
     scan_parser.add_argument("--output", type=Path, default=PROJECT_ROOT / "software_profile.json")
     scan_parser.add_argument("--rules", type=Path, default=PROJECT_ROOT / "rules" / "software_fingerprint")
     scan_parser.add_argument("--refresh-inventory", action="store_true", help="re-read the read-only Windows inventory")
+    scan_parser.add_argument("--target-profile", type=Path, help="bind generated profiles to a target computer")
     analyze_parser = subparsers.add_parser("analyze", help="generate replacement suggestions without executing changes")
     analyze_parser.add_argument("--profile", type=Path, default=PROJECT_ROOT / "software_profile.json")
     analyze_parser.add_argument("--output", type=Path, default=PROJECT_ROOT / "replacement_suggestion.json")
     analyze_parser.add_argument("--database", type=Path, default=PROJECT_ROOT / "database")
+    plan_parser = subparsers.add_parser("plan", help="create a target-bound migration plan without executing changes")
+    plan_parser.add_argument("--target-profile", type=Path, required=True)
+    plan_parser.add_argument("--profile", type=Path, default=PROJECT_ROOT / "software_profile.json")
+    plan_parser.add_argument("--suggestions", type=Path, default=PROJECT_ROOT / "replacement_suggestion.json")
+    plan_parser.add_argument("--output", type=Path, default=PROJECT_ROOT / "reports" / "migration_plan.json")
+    plan_parser.add_argument("--report", type=Path, default=PROJECT_ROOT / "reports" / "migration_report.json")
+    plan_parser.add_argument(
+        "--protection-rules",
+        type=Path,
+        default=PROJECT_ROOT / "rules" / "software_protection",
+    )
     return parser
 
 
 def main() -> int:
     args = build_parser().parse_args()
     if args.command == "scan":
-        return scan(args.inventory, args.output, args.rules, args.refresh_inventory)
+        return scan(args.inventory, args.output, args.rules, args.refresh_inventory, args.target_profile)
     if args.command == "analyze":
         return analyze(args.profile, args.output, args.database)
+    if args.command == "plan":
+        return plan_migration(
+            args.target_profile,
+            args.profile,
+            args.suggestions,
+            args.output,
+            args.report,
+            args.protection_rules,
+        )
     return 2
 
 

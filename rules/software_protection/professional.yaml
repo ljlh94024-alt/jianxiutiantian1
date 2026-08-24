@@ -1,0 +1,13 @@
+rules:
+  - protection: P1
+    action: ignore
+    reason: Image, design, CAD, and professional production software is protected by default.
+    categories: [professional, design, cad]
+    names:
+      - Adobe Photoshop
+      - Photoshop
+      - AutoCAD
+      - CAD
+      - Adobe Lightroom
+      - Lightroom
+

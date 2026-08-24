@@ -1,0 +1,15 @@
+rules:
+  - protection: P1
+    action: ignore
+    reason: Browsers are protected without evidence that they are unused and explicit user confirmation.
+    categories: [browser]
+    names:
+      - Google Chrome
+      - Microsoft Edge
+      - Mozilla Firefox
+      - 360浏览器
+      - 360安全浏览器
+      - 360极速浏览器
+      - 2345浏览器
+      - 2345加速浏览器
+

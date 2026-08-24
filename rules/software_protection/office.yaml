@@ -1,0 +1,11 @@
+rules:
+  - protection: P1
+    action: ignore
+    reason: Office and document-production software is protected by default.
+    categories: [office]
+    names:
+      - WPS Office
+      - Microsoft Office
+      - Microsoft 365
+      - LibreOffice
+
