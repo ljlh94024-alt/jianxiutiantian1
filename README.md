@@ -127,6 +127,12 @@ python -m server.run
 
 网页不会提供删除按钮或 Shell 输入框；保护软件只显示锁定，目标软件只能创建白名单任务，仍由 Task005 的目标 Agent 授权握手决定是否执行。
 
+## 安全执行器（Task 007）
+
+Task007 提供固定替代软件包目录 `packages/`（ImageGlass、7-Zip、VLC）和 `src/agent/executor/` 安全执行器。安装前校验固定包名、SHA-256 和捆绑组件；当前仓库只提交元数据，零哈希表示尚未配置真实安装包，禁止下载或盲装。
+
+支持的执行操作仅有 `install_replacement`、`uninstall_component` 和 `optimize_input_method`。卸载使用精确白名单；WPS、Office、浏览器和输入法主体永远受保护。输入法只可整理推广启动项、推广服务、通知入口和推广缓存，不替换主体、不删除词库、不修改默认输入法。所有操作需要 Task005 用户授权和 Agent 权限，默认 dry-run，安装后必须经过注入式验证后端。
+
 
 
 已支持 360、2345、腾讯、百度、搜狗和迅雷生态，以及 `security`、`browser`、`archive`、`image_viewer`、`driver_tool`、`downloader`、`input_method` 等分类。风险等级仅用于报告标记，不会触发任何操作。

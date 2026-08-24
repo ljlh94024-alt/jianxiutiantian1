@@ -1,0 +1,9 @@
+{
+  "name": "VLC",
+  "version": "provision-required",
+  "sha256": "0000000000000000000000000000000000000000000000000000000000000000",
+  "source": "https://www.videolan.org/vlc/",
+  "silent_args": ["/S"],
+  "verification": ["open_mp4", "open_mkv"],
+  "forbidden_components": ["browser", "input_method", "security", "desktop_assistant", "ad"]
+}

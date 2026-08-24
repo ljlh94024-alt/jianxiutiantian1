@@ -1,0 +1,9 @@
+{
+  "name": "ImageGlass",
+  "version": "provision-required",
+  "sha256": "0000000000000000000000000000000000000000000000000000000000000000",
+  "source": "https://imageglass.org/",
+  "silent_args": ["/VERYSILENT", "/SUPPRESSMSGBOXES", "/NORESTART"],
+  "verification": ["open_jpg", "open_png", "open_webp"],
+  "forbidden_components": ["browser", "input_method", "security", "desktop_assistant", "ad"]
+}

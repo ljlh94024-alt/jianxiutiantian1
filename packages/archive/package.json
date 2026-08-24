@@ -1,0 +1,9 @@
+{
+  "name": "7-Zip",
+  "version": "provision-required",
+  "sha256": "0000000000000000000000000000000000000000000000000000000000000000",
+  "source": "https://www.7-zip.org/",
+  "silent_args": ["/S"],
+  "verification": ["extract_zip", "extract_7z", "inspect_rar"],
+  "forbidden_components": ["browser", "input_method", "security", "desktop_assistant", "ad"]
+}

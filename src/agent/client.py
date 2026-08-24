@@ -110,7 +110,7 @@ class AgentClient:
                 task, session.session_id, "permission_denied", permission_name,
                 {"message": "Required permission was not granted; no handler ran."},
             )
-        result = self.executor.execute(task)
+        result = self.executor.execute(task, authorized=True)
         status = str(result.get("status", "completed"))
         return self._finish(task, session.session_id, status, permission_name, result)
 
