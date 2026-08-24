@@ -1,0 +1,10 @@
+{
+  "target_id": "customer_pc_001",
+  "task_id": "task_001",
+  "action": "analyze",
+  "risk": "L0",
+  "require_admin": false,
+  "created_time": "2026-08-24T00:00:00+08:00",
+  "parameters": {}
+}
+

@@ -6,3 +6,7 @@ software_profile.json
 replacement_suggestion.json
 reports/migration_plan.json
 reports/migration_report.json
+logs/*.log
+/task_package.json
+/authorization.json
+/result_package.json

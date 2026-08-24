@@ -12,6 +12,7 @@ from src.migration.planner import MigrationPlanner
 from src.migration.protection import ProtectionPolicy
 from src.replacement.loader import load_replacement_data
 from src.replacement.matcher import ReplacementMatcher
+from src.controller.task_sender import TaskSender
 from src.software.classifier import SoftwareClassifier
 from src.software.fingerprint import FingerprintDatabase
 from src.software.inventory import collect_windows_inventory
@@ -90,6 +91,17 @@ def plan_migration(
     return 0
 
 
+def create_task_package(
+    target_id: str, task_id: str, action: str, risk: str, require_admin: bool, output_path: Path
+) -> int:
+    task = TaskSender().create(
+        target_id, task_id, action, risk, require_admin  # type: ignore[arg-type]
+    )
+    TaskSender().write_offline(task, output_path)
+    print(f"Task package: {output_path}")
+    return 0
+
+
 def build_parser() -> argparse.ArgumentParser:
     parser = argparse.ArgumentParser(description="Windows Clean Agent (analysis only)")
     subparsers = parser.add_subparsers(dest="command", required=True)
@@ -114,6 +126,13 @@ def build_parser() -> argparse.ArgumentParser:
         type=Path,
         default=PROJECT_ROOT / "rules" / "software_protection",
     )
+    task_parser = subparsers.add_parser("create-task", help="create a target-bound offline task package")
+    task_parser.add_argument("--target-id", required=True)
+    task_parser.add_argument("--task-id", required=True)
+    task_parser.add_argument("--action", choices=("scan", "analyze", "report", "approved_action"), required=True)
+    task_parser.add_argument("--risk", choices=("L0", "L1", "L2"), default="L0")
+    task_parser.add_argument("--require-admin", action="store_true")
+    task_parser.add_argument("--output", type=Path, default=PROJECT_ROOT / "task_package.json")
     return parser
 
 
@@ -131,6 +150,10 @@ def main() -> int:
             args.output,
             args.report,
             args.protection_rules,
+        )
+    if args.command == "create-task":
+        return create_task_package(
+            args.target_id, args.task_id, args.action, args.risk, args.require_admin, args.output
         )
     return 2
 
